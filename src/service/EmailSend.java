@@ -1,10 +1,12 @@
 package service;
 
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Properties;
 import javax.mail.Authenticator;
 import javax.mail.Message;
+import javax.mail.MessagingException;
 import javax.mail.PasswordAuthentication;
 import javax.mail.Session;
 import javax.mail.Transport;
@@ -13,18 +15,28 @@ import javax.mail.internet.MimeMessage;
 
 public class EmailSend {
 
-	public void details(RegisterEnp registerEnp) throws IOException {
+	public void details(RegisterEnp registerEnp) {
 		System.out.print("check");
-		String message = "First Name" + registerEnp.getFirstName() +
-				"\n  LastName" + registerEnp.getLastName() + "\n Password " + registerEnp.getPassword() + "\n Address "
-				+ registerEnp.getAddress() + "\n City " + registerEnp.getCity() + "\n Zip Code " + registerEnp.getZip()
-				+ "\n State " + registerEnp.getState() + "\n Country " + registerEnp.getCountry();
+		String message = "First Name" + registerEnp.getFirstName() + "\n  LastName" + registerEnp.getLastName()
+				+ "\n Password " + registerEnp.getPassword() + "\n Address " + registerEnp.getAddress() + "\n City "
+				+ registerEnp.getCity() + "\n Zip Code " + registerEnp.getZip() + "\n State " + registerEnp.getState()
+				+ "\n Country " + registerEnp.getCountry();
 		String to = registerEnp.getEmail();
 		String subject = "Confirmation";
 		Properties properties1 = new Properties();
 
-		FileInputStream fileInputStream = new FileInputStream("C:\\Users\\BHASKAR\\Desktop\\internship\\AdvProject2\\SaveFile2.Properties");
-		properties1.load(fileInputStream);
+		FileInputStream fileInputStream;
+		try {
+			fileInputStream = new FileInputStream("SaveFile2.Properties");
+			properties1.load(fileInputStream);
+		} catch (FileNotFoundException e) {
+			
+			e.printStackTrace();
+		} catch (IOException e) {
+			
+			e.printStackTrace();
+		}
+
 		String from = properties1.getProperty("email");
 		String password = properties1.getProperty("password");
 
@@ -53,11 +65,11 @@ public class EmailSend {
 			message2.setText(message);
 
 			Transport.send(message2);
-			System.out.println("sent sucessfull");
-		} catch (Exception e) {
+		} catch (MessagingException e) {
 			// TODO: handle exception
 			e.printStackTrace();
 		}
+
 	}
 
 }
